@@ -1,0 +1,218 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..900&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Nunito, sans-serif;
+                background-image: url('/images/abstract-bg-6.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                min-height: 100vh;
+                padding: 40px 20px;
+                animation: fadein 1.5s ease forwards;
+                opacity: 0;
+            }
+
+            @@keyframes fadein {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .about-container {
+                max-width: 1000px;
+                margin: auto;
+                backdrop-filter: blur(12px);
+                border-radius: 15px;
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+                margin-bottom: 10px;
+                color: #333;
+                text-align: center;
+            }
+
+            .subtitle {
+                text-align: center;
+                color: #555;
+                margin-bottom: 30px;
+            }
+
+            .section {
+                margin-top: 25px;
+                padding: 20px;
+                border-radius: 12px;
+                backdrop-filter: blur(6px);
+                background: rgba(255,255,255,0.3);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            }
+
+                .section h2 {
+                    margin-bottom: 10px;
+                    color: #444;
+                }
+
+                .section p {
+                    color: #555;
+                    line-height: 1.6;
+                }
+
+            /* TEAM GRID */
+            .team-grid {
+                margin-top: 25px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+
+            .team-card {
+                background: rgba(255,255,255,0.6);
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+                backdrop-filter: blur(8px);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .team-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+                }
+
+            .team-img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 10px;
+                border: 3px solid rgba(255,255,255,0.7);
+            }
+
+            .team-name {
+                font-weight: 700;
+                margin-bottom: 4px;
+                color: #333;
+            }
+
+            .team-role {
+                font-size: 0.9rem;
+                color: #777;
+                margin-bottom: 8px;
+            }
+
+            .team-desc {
+                font-size: 0.85rem;
+                color: #555;
+            }
+
+            .back-btn {
+                display: inline-block;
+                margin-bottom: 20px;
+                padding: 8px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                background: rgba(255,255,255,0.5);
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .back-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                }
+
+            @@media (max-width: 600px) {
+                body {
+                    background-image: url('/images/abstract-mobile-bg-1.png');
+                }
+
+                h1 {
+                    font-size: 2rem;
+                }
+
+                .about-container {
+                    padding: 25px;
+                }
+            }
+    </style>
+</head>
+
+<div class="about-container">
+
+    <div class="back-btn" onclick="window.location.href='/'">
+        ← Back to Home
+    </div>
+
+    <h1>Meet the Team</h1>
+    <p class="subtitle">The people behind the Lost & Found system</p>
+
+    <div class="section">
+        <h2>About Us</h2>
+        <p>
+            We are a group of students dedicated to building a simple and effective platform
+            that helps reconnect lost items with their rightful owners. This project focuses
+            on usability, trust, and community cooperation within the school.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Our Mission</h2>
+        <p>
+            Our mission is to create a reliable system where reporting and finding lost items
+            is fast, organized, and accessible to everyone. We aim to reduce stress caused by
+            lost belongings and encourage a culture of honesty.
+        </p>
+    </div>
+
+    <!-- TEAM SECTION -->
+    <div class="section">
+        <h2>Our Team</h2>
+
+        <div class="team-grid">
+
+            <div class="team-card">
+                <img src="/images/team/team1.png" class="team-img" />
+                <div class="team-name">Walter White</div>
+                <div class="team-role">Full Stack Developer</div>
+                <div class="team-desc">Built the system and handled backend logic.</div>
+            </div>
+
+            <div class="team-card">
+                <img src="/images/team/team2.png" class="team-img" />
+                <div class="team-name">Leon S. Kennedy</div>
+                <div class="team-role">UI/UX Designer</div>
+                <div class="team-desc">Designed the interface and user experience.</div>
+            </div>
+
+            <div class="team-card">
+                <img src="/images/team/team3.png" class="team-img" />
+                <div class="team-name">Solid Snake</div>
+                <div class="team-role">Frontend Developer</div>
+                <div class="team-desc">Implemented layouts and responsive design.</div>
+            </div>
+
+            <div class="team-card">
+                <img src="/images/team/team4.png" class="team-img" />
+                <div class="team-name">Stefano</div>
+                <div class="team-role">Documentation</div>
+                <div class="team-desc">Handled testing and project documentation.</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

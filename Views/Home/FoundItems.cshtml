@@ -1,0 +1,579 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<LostAndFound.Models.FoundItemList>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Items</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+                background-image: url('/images/abstract-bg-3.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                min-height: 100vh;
+                color: #333;
+                display: block;
+                padding: 20px;
+                opacity: 0;
+                animation: fadein 1.5s ease forwards;
+            }
+
+            @@keyframes fadein {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .container {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding-top: 60px;
+            }
+
+            .back-btn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                background: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                cursor: pointer;
+                transition: transform 0.2s;
+                z-index: 10;
+                font-family: 'Nunito', sans-serif;
+            }
+
+                .back-btn:hover {
+                    transform: scale(1.05);
+                }
+
+            .search-wrapper {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 50px;
+            }
+
+            .group {
+                position: relative;
+                width: 100%;
+                max-width: 700px;
+            }
+
+            .input {
+                width: 100%;
+                height: 45px;
+                padding: 0 45px;
+                border-radius: 50px;
+                border: none;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+                outline: none;
+                font-size: 1rem;
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9e9ea7;
+                width: 20px;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                padding: 0 10px;
+            }
+
+                .header h1 {
+                    font-size: 2.2rem;
+                    font-weight: 700;
+                }
+
+            .report-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                cursor: pointer;
+                transition: transform 0.2s;
+                z-index: 10;
+                font-family: 'Nunito', sans-serif;
+            }
+
+                .report-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.2);
+                }
+
+            .items-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 25px;
+                padding-bottom: 50px;
+                justify-content: center;
+            }
+
+            .item {
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+            }
+
+                .item:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+                }
+
+            .lost-image {
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                object-fit: cover;
+                background-color: #f8f9fa;
+            }
+
+            .item-info {
+                padding: 20px;
+            }
+
+                .item-info h3 {
+                    font-size: 1.25rem;
+                    margin-bottom: 10px;
+                    color: #1a1a1a;
+                }
+
+            .meta {
+                font-size: 0.9rem;
+                color: #6c757d;
+                line-height: 1.6;
+            }
+
+                .meta strong {
+                    color: #495057;
+                }
+
+            @@media (max-width: 600px) {
+                .header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .report-btn {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .items-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                backdrop-filter: blur(4px);
+                z-index: 100;
+            }
+
+                .modal-overlay.active {
+                    display: block;
+                }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.95);
+                background: white;
+                border-radius: 16px;
+                padding: 30px;
+                width: 90%;
+                max-width: 480px;
+                max-height: 85vh;
+                overflow-y: auto;
+                z-index: 101;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+                transition: transform 0.2s ease, opacity 0.2s ease;
+                opacity: 0;
+            }
+
+                .modal.active {
+                    display: block;
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 1;
+                }
+
+            .modal-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: #f0f0f0;
+                border: none;
+                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+                border-radius: 12px;
+                margin-bottom: 16px;
+            }
+
+            .modal h2 {
+                font-size: 1.4rem;
+                margin-bottom: 12px;
+                color: #1a1a1a;
+            }
+
+            .modal-meta p {
+                font-size: 0.9rem;
+                color: #6c757d;
+                line-height: 1.8;
+            }
+
+            .claim-btn {
+                width: 100%;
+                margin-top: 20px;
+                padding: 12px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-family: Nunito, sans-serif;
+                font-weight: 700;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .claim-btn:hover {
+                    transform: scale(1.02);
+                    box-shadow: 0 6px 20px rgba(102,126,234,0.3);
+                }
+
+            .claim-field {
+                margin-top: 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+                .claim-field label {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: #333;
+                }
+
+                .claim-field input {
+                    padding: 10px 14px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 0.95rem;
+                    font-family: Nunito, sans-serif;
+                    outline: none;
+                    transition: border 0.2s;
+                }
+
+                    .claim-field input:focus {
+                        border-color: #667eea;
+                    }
+
+            .optional {
+                font-weight: 400;
+                color: #999;
+                font-size: 0.8rem;
+            }
+
+            .submit-claim-btn {
+                width: 100%;
+                margin-top: 18px;
+                padding: 12px;
+                background: #28a745;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-family: Nunito, sans-serif;
+                font-weight: 700;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .submit-claim-btn:hover {
+                    transform: scale(1.02);
+                    box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+                }
+    </style>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <div class="container">
+        <h1>List of Items Found</h1>
+        <div class="search-wrapper">
+            <div class="group">
+                <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24">
+                    <g>
+                        <path d="M21.53 20.47l-3.66-3.66a8.22 8.22 0 10-1.06 1.06l3.66 3.66a.75.75 0 101.06-1.06zM3.5 11a7.5 7.5 0 117.5 7.5A7.51 7.51 0 013.5 11z"></path>
+                    </g>
+                </svg>
+                <input placeholder="Search..." type="search" class="input">
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="empty-state" style="display:block;">No lost items found. Try adjusting your search or check back later.</p>
+        }
+        else
+        {
+            <div class="items-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="item" onclick="openModal(@item.Id, '@item.ItemName', '@item.PickupLocation', '@item.FoundAt', '@item.DateFound.ToShortDateString()', '@item.Description', '@item.ImageName', '@(string.IsNullOrEmpty(item.Name) ? "Anonymous" : item.Name)', '@(string.IsNullOrEmpty(item.Email) ? "N/A" : item.Email)', '@(string.IsNullOrEmpty(item.PhoneNumber) ? "N/A" : item.PhoneNumber)')">
+                        <img src="~/images/lost-images/@item.ImageName" alt="@item.ItemName" class="lost-image">
+                        <div class="item-info">
+                            <h3>@item.ItemName</h3>
+                            <div class="meta">
+                                <p><strong>Can be found at:</strong> @item.PickupLocation</p>
+                                <p><strong>Found at:</strong> @item.FoundAt</p>
+                                <p><strong>Date Found:</strong> @item.DateFound.ToShortDateString()</p>
+                                <p style="margin-top:10px; font-style:italic;">"@item.Description"</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- MODAL OVERLAY -->
+        <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+        <!-- MODAL -->
+        <div class="modal" id="itemModal">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+
+            <img id="modal-img" src="" class="modal-img" />
+            <h2 id="modal-name"></h2>
+
+            <div class="modal-meta" id="modal-meta"></div>
+
+            <!-- CLAIM BUTTON -->
+            <button class="claim-btn" id="claimBtn" onclick="showClaimForm()">Claim This Item</button>
+
+            <!-- CLAIM FORM (hidden initially) -->
+            <form id="claimForm" style="display:none;" onsubmit="submitClaim(event)">
+                <input type="hidden" id="claim-item-id" name="itemId" />
+
+                <div class="claim-field">
+                    <label>Your Name <span style="color:red;">*</span></label>
+                    <input type="text" id="claim-name" name="requesterName" required placeholder="Full name" />
+                </div>
+                <div class="claim-field">
+                    <label>Email <span class="optional">(optional)</span></label>
+                    <input type="email" id="claim-email" name="requesterEmail" placeholder="email@example.com" />
+                </div>
+                <div class="claim-field">
+                    <label>Phone <span class="optional">(optional)</span></label>
+                    <input type="tel" id="claim-phone" name="requesterPhone" placeholder="e.g. 09XXXXXXXXX" />
+                </div>
+
+                <button type="submit" class="submit-claim-btn">Submit Claim</button>
+                <p id="claim-error" style="color:red; margin-top:8px; display:none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="goBack()">Back</button>
+    <button class="report-btn" onclick="redirectToReportLost()">Report A Lost Item</button>
+
+    <script>
+            function goBack() {
+                if (document.referrer) {
+                    window.history.back();
+                } else {
+                    window.location.href = "@Url.Action("Index", "Home")";
+                }
+            }
+
+            function redirectToReportLost() {
+                window.location.href = "@Url.Action("ReportLost", "Home")";
+            }
+
+            const searchInput = document.querySelector('.input');
+            const locationFilter = document.getElementById('location-filter');
+
+            let animationFrame;
+            let items = [];
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(animationFrame);
+                animationFrame = setTimeout(() => performSearch(this.value), 150);
+            });
+
+            if (locationFilter) {
+                locationFilter.addEventListener('change', () => {
+                    performSearch(searchInput.value);
+                });
+            }
+
+            function performSearch(query) {
+                query = query.toLowerCase();
+                const location = locationFilter ? locationFilter.value.toLowerCase() : '';
+
+                requestAnimationFrame(() => {
+                    if (!items.length) {
+                        items = Array.from(document.querySelectorAll('.item'));
+                    }
+
+                    const firstPositions = new Map(
+                        items.map(item => [item, item.getBoundingClientRect()])
+                    );
+
+                    items.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        const matchesSearch = text.includes(query);
+                        const itemLocation = !location || text.includes(location);
+                        item.classList.toggle('hide', !(matchesSearch && itemLocation));
+                    });
+
+                    document.body.offsetHeight;
+
+                    items.forEach(item => {
+                        const first = firstPositions.get(item);
+                        const last = item.getBoundingClientRect();
+                        const dx = first.left - last.left;
+                        const dy = first.top - last.top;
+
+                        if (dx || dy) {
+                            animateItem(item, dx, dy);
+                        }
+
+                        const anyVisible = items.some(i => !i.classList.contains('hide'));
+                        const emptyState = document.querySelector('.empty-state');
+                        if (emptyState) {
+                            emptyState.style.display = anyVisible ? 'none' : 'block';
+                        }
+                    });
+                });
+            }
+
+            function animateItem(item, dx, dy) {
+                item.style.transition = 'none';
+                item.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                requestAnimationFrame(() => {
+                    item.style.transition = 'transform 0.4s ease';
+                    item.style.transform = '';
+
+                    const onTransitionEnd = () => {
+                        item.style.transition = '';
+                        item.removeEventListener('transitionend', onTransitionEnd);
+                    };
+                    item.addEventListener('transitionend', onTransitionEnd, { once: true });
+                });
+            }
+
+            function openModal(id, name, pickup, foundAt, dateFound, description, imageName, Name, Email, PhoneNumber) {
+                document.getElementById('modal-img').src = '/images/lost-images/' + imageName;
+                document.getElementById('modal-name').textContent = name;
+                document.getElementById('modal-meta').innerHTML = `
+                        <p><strong>Can be found at:</strong> ${pickup}</p>
+                        <p><strong>Found at:</strong> ${foundAt}</p>
+                        <p><strong>Date Found:</strong> ${dateFound}</p>
+                        <p><strong>Found by:</strong> ${Name}</p>
+                        <p><strong>Their Email:</strong> ${Email}</p>
+                        <p><strong>Their Phone:</strong> ${PhoneNumber}</p>
+                        <p style="margin-top:10px; font-style:italic;">"${description}"</p>
+                `;
+                document.getElementById('claim-item-id').value = id;
+
+                // Reset form state
+                document.getElementById('claimForm').style.display = 'none';
+                document.getElementById('claimBtn').style.display = 'block';
+                document.getElementById('claim-error').style.display = 'none';
+                document.getElementById('claimForm').reset();
+
+                document.getElementById('modalOverlay').classList.add('active');
+                document.getElementById('itemModal').classList.add('active');
+            }
+
+            function closeModal() {
+                document.getElementById('modalOverlay').classList.remove('active');
+                document.getElementById('itemModal').classList.remove('active');
+            }
+
+            function showClaimForm() {
+                document.getElementById('claimBtn').style.display = 'none';
+                document.getElementById('claimForm').style.display = 'block';
+            }
+
+            async function submitClaim(e) {
+                e.preventDefault();
+
+                const payload = {
+                    itemId: document.getElementById('claim-item-id').value,
+                    requesterName: document.getElementById('claim-name').value,
+                    requesterEmail: document.getElementById('claim-email').value,
+                    requesterPhone: document.getElementById('claim-phone').value,
+                };
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            const response = await fetch('@Url.Action("SubmitClaim", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(payload)
+            });
+
+                if (response.ok) {
+                    closeModal();
+                    alert('Claim submitted! The admin will review it shortly.');
+                } else {
+                    document.getElementById('claim-error').textContent = 'Something went wrong. Please try again.';
+                    document.getElementById('claim-error').style.display = 'block';
+                }
+            }
+    </script>
+</body>

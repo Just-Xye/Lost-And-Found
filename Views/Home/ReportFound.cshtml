@@ -1,0 +1,214 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <script></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Found Item</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Nunito, sans-serif;
+            background-image: url('/images/abstract-bg-4.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadein 2s ease forwards;
+            opacity: 0;
+        }
+
+        @@keyframes fadein {
+            to { opacity: 1; }
+        }
+
+        .container {
+            backdrop-filter: blur(12px);
+            max-width: 600px;
+            margin: 0 auto;
+            background: transparent;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: Nunito, sans-serif;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            font-family: Nunito, sans-serif;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn {
+            background: #f0f0f0ab;
+            color: #333;
+            font-family: Nunito, sans-serif;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @@media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+            body {
+                background-image: url(abstract-mobile-bg-3.png);
+                background-position: center top;
+                background-attachment: fixed;
+                background-size: cover;}
+        }
+    </style>
+</head>
+<body>
+    @model LostAndFound.Models.FoundItemList
+
+    <div class="container">
+        <h1>Report Found Item</h1>
+        <form asp-action="ReportFound" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+        
+            <div class="form-group">
+                <label asp-for="ItemName">Item Name <span style="color:red;">*</span></label>
+                <input asp-for="ItemName" placeholder="e.g., Blue Backpack" required>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Image</label>
+                <input type="file" name="imageFile" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description">Description <span style="color:red;">*</span></label>
+                <textarea asp-for="Description" placeholder="Describe the item in detail..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FoundAt">Location Found <span style="color:red;">*</span></label>
+                <input asp-for="FoundAt" placeholder="e.g., Library, Cafeteria" required>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PickupLocation">Pick Up Location <span style="color:red;">*</span></label>
+                <input asp-for="PickupLocation" placeholder="e.g., Faculty" required>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Name">Your Name</label>
+                <input asp-for="Name" placeholder="Your full name">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email">Your Email</label>
+                <input asp-for="Email" type="email" placeholder="your.email@school.com">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber">Phone Number</label>
+                <input asp-for="PhoneNumber" type="tel" placeholder="Contact number">
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="back-btn" onclick="goBack()">Back</button>
+                <button type="submit" class="submit-btn">Submit Report</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for reporting the found item! Our team will process it shortly.');
+            document.querySelector('form').reset();
+        }
+
+        function goBack() {
+        window.location.href = "@Url.Action("Index", "Home")";
+        }
+    </script>
+</body>

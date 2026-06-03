@@ -1,0 +1,190 @@
+﻿@{
+    Layout = null;
+}
+@model LostAndFound.Models.LostItemList
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..900&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Nunito, sans-serif;
+                background-image: url('/images/abstract-bg-7.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                min-height: 100vh;
+                padding: 20px;
+                animation: fadein 1.5s ease forwards;
+                opacity: 0;
+            }
+
+            @@keyframes fadein {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .container {
+                max-width: 650px;
+                margin: 0 auto;
+                background: transparent;
+                backdrop-filter: blur(12px);
+                padding: 40px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            }
+
+            h1 {
+                margin-bottom: 25px;
+                font-size: 2.2rem;
+                color: #333;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+                color: #444;
+            }
+
+            input, textarea, select {
+                width: 100%;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                font-family: Nunito, sans-serif;
+                transition: 0.2s;
+            }
+
+            textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+                input:focus, textarea:focus, select:focus {
+                    outline: none;
+                    border-color: #667eea;
+                    box-shadow: 0 0 8px rgba(102,126,234,0.3);
+                }
+
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 25px;
+            }
+
+            button {
+                flex: 1;
+                padding: 12px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .submit-btn {
+                background: #667eea;
+                color: white;
+            }
+
+                .submit-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+                }
+
+            .back-btn {
+                background: #f0f0f0;
+                color: #333;
+            }
+
+                .back-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                }
+
+            @@media (max-width: 600px) {
+                body {
+                    background-image: url('/images/abstract-mobile-bg-3.png');
+                }
+
+                .container {
+                    padding: 25px;
+                }
+
+                .button-group {
+                    flex-direction: column;
+                }
+            }
+    </style>
+</head>
+<div class="container">
+
+    <h1>Report Lost Item</h1>
+
+    <form asp-action="ReportLost" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label>Item Name <span style="color:red;">*</span></label>
+            <input asp-for="ItemName" placeholder="e.g., Blue Backpack" required />
+        </div>
+
+        <div class="form-group">
+            <label>Upload Image</label>
+            <input type="file" name="imageFile" accept="image/*" />
+        </div>
+
+        <div class="form-group">
+            <label>Description <span style="color:red;">*</span></label>
+            <textarea asp-for="Description" placeholder="Describe the lost item..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Last Seen Location <span style="color:red;">*</span></label>
+            <input asp-for="LocationLost" placeholder="e.g., Library, Cafeteria" required />
+        </div>
+
+        <div class="form-group">
+            <label>Date Lost <span style="color:red;">*</span></label>
+            <input asp-for="DateLost" type="date" required />
+        </div>
+
+        <div class="form-group">
+            <label>Your Name <span style="color:red;">*</span></label>
+            <input asp-for="OwnerName" placeholder="Your full name" required />
+        </div>
+
+        <div class="form-group">
+            <label>Your Email <span style="color:red;">*</span></label>
+            <input asp-for="Email" type="email" placeholder="your.email@school.com" required />
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number <span style="color:red;">*</span></label>
+            <input asp-for="PhoneNumber" placeholder="Contact number" required />
+        </div>
+
+        <div class="form-group">
+            <label>Your Class Section</label>
+            <input asp-for="Section" placeholder="Optional class section" />
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="back-btn" onclick="history.back()">Back</button>
+            <button type="submit" class="submit-btn">Submit Report</button>
+        </div>
+
+    </form>
+
+</div>

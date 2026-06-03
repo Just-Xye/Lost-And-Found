@@ -1,0 +1,322 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost and Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-image: url('/images/abstract-bg-1.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                transition: all 0.3s ease;
+                animation: fadein 2s ease forwards;
+                opacity: 0;
+                color: var(--text-color);
+            }
+
+            @@keyframes fadein {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .container {
+                text-align: center;
+                color: rgb(24, 24, 24);
+                font-family: Nunito, 'Times New Roman', sans-serif;
+            }
+
+            h1 {
+                font-size: 3.5rem;
+                margin-bottom: 1rem;
+                font-family: 'DM Serif Display', serif;
+                font-style: italic;
+                color: var(--text-color)
+            }
+
+            h2 {
+                font-family: 'Nunito', serif;
+                font-size: 1.5rem;
+                color: rgba(10,10,10);
+            }
+
+            p {
+                font-size: 1.25rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+
+            .bg-svg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+            }
+
+            .button-group {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 20px 32px;
+                font-size: 1rem;
+                background: transparent;
+                backdrop-filter: blur(12px);
+                color: var(--btn-color);
+                width: 260px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: transform 0.2s, box-shadow 0.2s;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                text-align: center;
+                font-family: Nunito, 'Times New Roman', sans-serif;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+                .btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                }
+
+                .btn span {
+                    display: block;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .btn .icon {
+                    width: 48px;
+                    height: 48px;
+                    margin-bottom: 4px;
+                }
+
+                .btn .line1 {
+                    font-size: 1.25rem;
+                    color: rgba(10,10,10,0.8);
+                }
+
+                .btn .line2 {
+                    font-size: 0.875rem;
+                    color: #667eea;
+                }
+
+            .hamburger {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                font-size: 24px;
+                background: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .hamburger:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                }
+
+            .side-menu {
+                position: fixed;
+                top: 0;
+                right: -350px;
+                width: 350px;
+                height: 100%;
+                background: white;
+                box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+                transition: right 0.3s ease;
+                padding: 80px 30px 30px;
+                z-index: 999;
+                max-height: 100vh;
+                overflow-y: auto;
+            }
+
+                .side-menu.open {
+                    right: 0;
+                }
+
+                .side-menu h2 {
+                    font-family: Nunito, 'Times New Roman';
+                    color: #333333;
+                    margin-bottom: 30px;
+                    font-size: 2rem;
+                    border-bottom: 2px solid #f0f0f0;
+                    padding-bottom: 15px;
+                }
+
+            .menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(5px);
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+                z-index: 998;
+            }
+
+                .menu-overlay.active {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+            .us-buton {
+                z-index: 1000;
+                font-size: 24px;
+                background: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+                .us-buton:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                }
+
+            .theme-btn {
+                position: fixed;
+                top: 20px;
+                right: 80px;
+                z-index: 1000;
+                font-size: 24px;
+                background: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            @@media (max-width: 600px) {
+                h1 {
+                    font-size: 2.5rem;
+                }
+
+                p {
+                    font-size: 1rem;
+                }
+
+                .btn {
+                    width: 250px;
+                    max-width: 350px;
+                }
+
+                body {
+                    background-image: url(abstract-mobile-bg-1.png);
+                    background-position: center top;
+                    background-attachment: fixed;
+                    background-size: cover;
+                }
+            }
+    </style>
+</head>
+<body>
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+    <svg class="bg-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800" opacity="1">
+        <defs>
+            <filter id="bbblurry-filter" x="-100%" y="-100%" width="400%" height="400%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feGaussianBlur stdDeviation="57" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic" edgeMode="none" result="blur"></feGaussianBlur>
+            </filter>
+        </defs>
+        <g filter="url(#bbblurry-filter)">
+            <ellipse rx="150" ry="150" cx="267.4659169781271" cy="236.77064514160156" fill="hsl(37, 99%, 67%)"></ellipse>
+            <ellipse rx="150" ry="150" cx="554.1374144229588" cy="237.50286609589745" fill="hsl(316, 73%, 52%)"></ellipse>
+            <ellipse rx="150" ry="150" cx="395.07269414931693" cy="439.797541433604" fill="hsl(185, 100%, 57%)"></ellipse>
+        </g>
+    </svg>
+
+    <div class="container">
+        <h2>Lost And Found</h2>
+        <h1>Lost something?<span style="color: #3d55bf;"> We'll help.</span></label></h1>
+        <p>Search for lost items reported by your classmates, or let others know about something you found on campus.</p>
+        <div class="button-group">
+            <button class="btn" onclick="redirectToFoundItems()">
+                <img src="~/images/search.svg" alt="Search Icon" class="icon">
+                <span class="text">
+                    <span class="line1">Lost an Item?</span>
+                    <span class="line2">Find or report it here!</span>
+                </span>
+            </button>
+            <button class="btn" onclick="redirectToReport()">
+                <img src="~/images/report.svg" alt="Report Icon" class="icon">
+                <span class="text">
+                    <span class="line1">Found an Item?</span>
+                    <span class="line2">Report it here!</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="side-menu" id="sideMenu">
+        <h2>Info</h2>
+        <p>This website is designed to help students find lost items and report found items within our school community. If you've lost something, you can search through the listings to see if someone has found it. If you've found an item, you can report it here so that the rightful owner can be reunited with their belongings.</p>
+        <p>We encourage everyone to use this platform responsibly and help each other out. Together, we can create a supportive community where lost items can find their way back to their owners!</p>
+        <button class="us-buton" onclick="redirectToAboutUs()">About Us</button> <!-- ✅ Fixed: was <buton> -->
+    </div>
+
+    <script>
+            function toggleMenu() {
+                const menu = document.getElementById('sideMenu');
+                const overlay = document.getElementById('menuOverlay');
+                menu.classList.toggle('open');
+                overlay.classList.toggle('active');
+            }
+
+            function closeMenu() {
+                const menu = document.getElementById('sideMenu');
+                const overlay = document.getElementById('menuOverlay');
+                menu.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+
+            function redirectToFoundItems() {
+                window.location.href = "@Url.Action("FoundItems", "Home")";
+            }
+            function redirectToReport() {
+                window.location.href = "@Url.Action("ReportFound", "Home")";
+            }
+            function redirectToAboutUs() {
+                window.location.href = "@Url.Action("AboutUs", "Home")";
+            }
+    </script>
+</body>

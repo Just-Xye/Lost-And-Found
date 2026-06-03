@@ -1,0 +1,170 @@
+﻿@{
+    Layout = null;
+}
+@model LostAndFound.Models.AdminAccount
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..900&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Nunito, sans-serif;
+                background-image: url('/images/abstract-bg-5.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: fadein 1.5s ease forwards;
+                opacity: 0;
+            }
+
+            @@keyframes fadein {
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .container {
+                width: 100%;
+                max-width: 400px;
+                padding: 35px;
+                border-radius: 15px;
+                background: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(12px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                text-align: center;
+            }
+
+            h2 {
+                margin-bottom: 20px;
+                color: #333;
+                font-size: 2rem;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+                text-align: left;
+            }
+
+            .input-field {
+                width: 100%;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                font-family: Nunito, sans-serif;
+                font-size: 1rem;
+                transition: 0.2s;
+            }
+
+                .input-field:focus {
+                    outline: none;
+                    border-color: #667eea;
+                    box-shadow: 0 0 8px rgba(102,126,234,0.3);
+                }
+
+            .submit-btn {
+                width: 100%;
+                padding: 12px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                margin-top: 10px;
+                transition: transform 0.2s, box-shadow 0.2s;
+                font-family: Nunito, sans-serif;
+            }
+
+                .submit-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+                }
+
+            .error-message {
+                color: #dc3545;
+                margin-top: 10px;
+                font-size: 0.9rem;
+            }
+
+            .success-message {
+                color: #28a745;
+                margin-top: 10px;
+                font-size: 0.9rem;
+            }
+
+            .back-btn {
+                margin-top: 15px;
+                display: inline-block;
+                background: white;
+                padding: 8px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: 0.2s;
+            }
+
+                .back-btn:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                }
+
+            @@media (max-width: 600px) {
+                body {
+                    background-image: url('/images/abstract-mobile-bg-1.png');
+                }
+
+                .container {
+                    padding: 25px;
+                }
+            }
+    </style>
+</head>
+
+<div class="container">
+
+    <h2>Create Admin Account</h2>
+
+    <form asp-controller="Account" asp-action="Register" method="post">
+
+        <div class="form-group">
+            <input asp-for="Username" class="input-field" placeholder="Username" required />
+        </div>
+
+        <div class="form-group">
+            <input asp-for="Password" type="password" class="input-field" placeholder="Password" required />
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="ConfirmPassword" class="input-field" placeholder="Confirm Password" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Create Account</button>
+
+        @if (ViewBag.Error != null)
+        {
+            <p class="error-message">@ViewBag.Error</p>
+        }
+
+        @if (ViewBag.Success != null)
+        {
+            <p class="success-message">@ViewBag.Success</p>
+        }
+
+    </form>
+
+    <div class="back-btn" onclick="window.location.href='/'">
+        ← Back to Home
+    </div>
+
+</div>

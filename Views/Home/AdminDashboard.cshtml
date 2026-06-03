@@ -1,0 +1,365 @@
+﻿@{
+    Layout = null;
+}
+@model LostAndFound.Models.AdminDashboardViewModel
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..900&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Nunito, sans-serif;
+    background-image: url('/images/abstract-bg-2.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 30px;
+    animation: fadein 1.5s ease forwards;
+    opacity: 0;
+}
+
+@@keyframes fadein {
+    to { opacity: 1; }
+}
+
+.dashboard-container {
+    max-width: 1100px;
+    margin: auto;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: rgba(255,255,255,0.6);
+    font-weight: 600;
+    transition: 0.2s;
+    font-family: 'Nunito', sans-serif;
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.item-card {
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+    padding: 15px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.item-card:hover {
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.meta {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.lost-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.actions form {
+    flex: 1;
+    display: flex;
+}
+
+.resolved-btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #17a2b8;
+    color: white;
+    font-weight: 600;
+    font-family: 'Nunito', sans-serif;
+}
+
+button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.logout-btn {
+    background: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: Nunito, sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.logout-btn:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}
+
+.btn-approve-request { 
+    background: #667eea; 
+    color: white;
+    font-family: Nunito, sans-serif;
+}
+
+.btn-approve { background: #28a745; color: white; font-family: Nunito, sans-serif; }
+.btn-reject { background: #dc3545; color: white; font-family: Nunito, sans-serif; }
+
+.btn-approve:hover, .btn-reject:hover, .btn-approve-request:hover, .resolved-btn:hover {
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}
+
+.back-btn {
+    margin-bottom: 15px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: Nunito, sans-serif;
+}
+
+.back-btn:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: scale(1.05);
+}
+
+.empty-state {
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
+
+<div class="dashboard-container">
+
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <form asp-action="Logout" asp-controller="Account" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
+    <h2>Admin Dashboard</h2>
+
+    <!-- TAB BUTTONS -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('found', this)">Pending Found</button>
+        <button class="tab-btn" onclick="showTab('lost', this)">Lost Requests</button>
+        <button class="tab-btn" onclick="showTab('claims', this)">Claim Requests</button>
+        <button class="tab-btn" onclick="showTab('active', this)">Active Items</button>
+    </div>
+
+    <!-- TAB 1: FOUND ITEMS (PENDING) -->
+    <div id="found" class="tab-content active">
+
+        @if (Model == null || Model.PendingFoundItems == null || !Model.PendingFoundItems.Any())
+        {
+            <p class="empty-state">No pending found item reports.</p>
+        }
+        else
+        {
+            <div class="items-grid">
+                @foreach (var item in Model.PendingFoundItems)
+                {
+                    <div class="item-card">
+                        <h3>@item.ItemName</h3>
+
+                        <img src="~/images/lost-images/@item.ImageName" class="lost-image" />
+
+                        <p class="meta"><strong>Location Found:</strong> @item.FoundAt</p>
+                        <p class="meta"><strong>Date Found:</strong> @item.DateFound.ToShortDateString()</p>
+                        <p class="meta"><strong>Finder Name:</strong> @(string.IsNullOrEmpty(item.Name) ? "Anonymous" : item.Name)</p>
+                        <p class="meta"><strong>Finder Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "N/A" : item.Email)</p>
+                        <p class="meta"><strong>Finder Phone:</strong> @(string.IsNullOrEmpty(item.PhoneNumber) ? "N/A" : item.PhoneNumber)</p>
+
+                        <div class="actions">
+                            <form asp-action="ApproveItem" asp-route-id="@item.Id" method="post">
+                                <button type="submit" class="btn-approve">Approve</button>
+                            </form>
+                            <form asp-action="RejectItem" asp-route-id="@item.Id" method="post">
+                                <button type="submit" class="btn-reject">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
+    <!-- TAB 2: LOST REQUESTS -->
+    <div id="lost" class="tab-content">
+
+        @if (Model == null || Model.StudentLostReports == null || !Model.StudentLostReports.Any())
+        {
+            <p class="empty-state">No student lost reports.</p>
+        }
+        else
+        {
+            <div class="items-grid">
+                @foreach (var report in Model.StudentLostReports)
+                {
+                    <div class="item-card">
+                        <h3>@report.ItemName</h3>
+
+                        <img src="~/images/lost-images/@report.ImageName" class="lost-image" />
+
+                        <p class="meta"><strong>Owner:</strong> @report.OwnerName (@report.Section)</p>
+                        <p class="meta"><strong>Last Seen:</strong> @report.LocationLost</p>
+                        <p class="meta"><strong>Email:</strong> @report.Email</p>
+                        <p class="meta"><strong>Phone:</strong> @report.PhoneNumber</p>
+
+                        <p class="meta" style="margin-top:10px; font-style:italic;">
+                            "@report.Description"
+                        </p>
+
+                        <div class="actions" style="margin-top: 15px;">
+                            <form asp-action="MoveToFound" asp-route-id="@report.Id" method="post">
+                                <button type="submit" class="btn-approve-request" style="background-color: #667eea; width: 100%;" onclick="return confirm('Are you sure you want to mark this item as active?');">
+                                    Mark Active
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
+    <!-- TAB 3: CLAIM REQUESTS -->
+<div id="claims" class="tab-content">
+    @if (Model.ClaimRequests == null || !Model.ClaimRequests.Any())
+    {
+        <p class="empty-state">No claim requests.</p>
+    }
+    else
+    {
+        <div class="items-grid">
+            @foreach (var claim in Model.ClaimRequests)
+            {
+                <div class="item-card">
+                    <h3>Claim Request for Item: @claim.ItemName</h3>
+                    <img src="~/images/lost-images/@claim.ImageName" class="lost-image" />
+                    <p class="meta"><strong>Claimant Name:</strong> @claim.RequesterName</p>
+                    <p class="meta"><strong>Email:</strong> @(string.IsNullOrEmpty(claim.RequesterEmail) ? "N/A" : claim.RequesterEmail)</p>
+                    <p class="meta"><strong>Phone:</strong> @(string.IsNullOrEmpty(claim.RequesterPhone) ? "N/A" : claim.RequesterPhone)</p>
+                    <p class="meta"><strong>Request Date:</strong> @claim.RequestDate.ToShortDateString()</p>
+                    
+                    <div class="actions" style="margin-top: 15px; display: flex; gap: 4%;">
+                        <form asp-action="ApproveClaim" asp-route-id="@claim.Id" method="post" style="flex:1;">
+			    @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-approve-request" style="background-color: #28a745; width: 100%; color: white; border:none; padding: 8px; border-radius: 5px; cursor:pointer;" onclick="return confirm('Approve this claim request?');">
+                                Approve
+                            </button>
+                        </form>
+                        <form asp-action="RejectClaim" asp-route-id="@claim.Id" method="post" style="flex:1;">
+			    @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-approve-request" style="background-color: #dc3545; width: 100%; color: white; border:none; padding: 8px; border-radius: 5px; cursor:pointer;" onclick="return confirm('Reject this claim request?');">
+                                Reject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+    <!-- TAB 4: APPROVED / ACTIVE ITEMS -->
+    <div id="active" class="tab-content">
+
+        @if (Model == null || Model.ApprovedFoundItems == null || !Model.ApprovedFoundItems.Any())
+        {
+            <p class="empty-state">No active items.</p>
+        }
+        else
+        {
+            <div class="items-grid">
+                @foreach (var item in Model.ApprovedFoundItems)
+                {
+                    <div class="item-card">
+                        <h3>@item.ItemName</h3>
+
+                        <img src="~/images/lost-images/@item.ImageName" class="lost-image" />
+
+                        <p class="meta"><strong>Pick up location:</strong> @item.PickupLocation</p>
+                        <p class="meta"><strong>Date Found:</strong> @item.DateFound.ToShortDateString()</p>
+                        <p class="meta"><strong>Finder Name:</strong> @(string.IsNullOrEmpty(item.Name) ? "Anonymous" : item.Name)</p>
+                        <p class="meta"><strong>Finder Email:</strong> @(string.IsNullOrEmpty(item.Email) ? "N/A" : item.Email)</p>
+                        <p class="meta"><strong>Finder Phone:</strong> @(string.IsNullOrEmpty(item.PhoneNumber) ? "N/A" : item.PhoneNumber)</p>
+
+                        <p class="meta" style="margin-top:10px; font-style:italic;">
+                            "@item.Description"
+                        </p>
+
+                        <form asp-action="ResolveItem" asp-route-id="@item.Id" method="post">
+                            <button type="submit" class="resolved-btn" onclick="return confirm('Are you sure you want to mark this item as resolved?');">Mark as Resolved</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<script>
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+}
+</script>
